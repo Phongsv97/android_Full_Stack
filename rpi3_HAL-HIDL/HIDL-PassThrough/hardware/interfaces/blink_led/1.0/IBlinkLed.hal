@@ -1,0 +1,10 @@
+/*
+*
+*/
+
+// android/hardware/interface
+package android.hardware.blinkled@1.0;
+
+interface IBlinkLed {
+	readStatus() generates (int32_t ret);	
+};

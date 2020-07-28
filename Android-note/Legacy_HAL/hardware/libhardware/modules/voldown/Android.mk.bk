@@ -1,0 +1,17 @@
+LOCAL_PATH := $(my-dir)
+
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := \
+	voldown.c
+
+LOCAL_HEADER_LIBRARIES := libhardware_headers
+
+LOCAL_MODULE_RELATIVE_PATH := hw
+LOCAL_MODULE := voldown.default
+LOCAL_MODULE_TAGS := optional
+LOCAL_CFLAGS := -Wall -Wno-unused-parameter
+LOCAL_SHARED_LIBRARIES := \
+	libcutils \
+	liblog
+
+include $(BUILD_SHARED_LIBRARY)

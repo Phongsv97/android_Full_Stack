@@ -1,0 +1,15 @@
+cc_test {
+    name: "voldown_tests",
+    srcs: ["test_voldown.cpp"],
+
+    shared_libs: [
+        "liblog",
+        "libhardware",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+    ],
+}

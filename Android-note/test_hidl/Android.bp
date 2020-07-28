@@ -1,0 +1,18 @@
+
+cc_binary {
+    relative_install_path: "hw",
+    defaults: ["hidl_defaults"],
+    name: "test_btn",
+    proprietary: true,
+    srcs: ["test_btn.cpp"],
+
+    shared_libs: [
+        "liblog",
+        "libhardware",
+        "libhidlbase",
+        "libhidltransport",
+        "libutils",
+        "android.hardware.testvol@1.0",
+    ],
+
+}

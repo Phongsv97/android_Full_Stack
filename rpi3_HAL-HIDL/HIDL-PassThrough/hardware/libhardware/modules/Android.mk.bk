@@ -1,0 +1,10 @@
+LOCAL_PATH:= $(call my-dir)
+
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := \
+	led_hal.c
+LOCAL_MODULE_RELATIVE_PATH := hw
+LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -llog
+LOCAL_MODULE := led_hal
+LOCAL_MODULE_TAGS := optional
+include $(BUILD_SHARED_LIBRARY)

@@ -1,0 +1,6 @@
+menu "Hello HAL menu"
+config HELLO
+	bool "hello"
+	help 
+		Select this option to build hello kernel module.			
+endmenu 

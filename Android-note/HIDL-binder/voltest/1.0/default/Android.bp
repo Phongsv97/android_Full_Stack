@@ -1,0 +1,14 @@
+cc_library_shared {
+    name: "vendor.hardware.voltest@1.0-impl",
+    relative_install_path: "hw",
+    proprietary: true,
+    srcs: [
+        "Voltest.cpp",
+    ],
+    shared_libs: [
+        "libhidlbase",
+        "libhidltransport",
+        "libutils",
+        "vendor.hardware.voltest@1.0",
+    ],
+}

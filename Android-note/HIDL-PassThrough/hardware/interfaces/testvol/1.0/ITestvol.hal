@@ -1,0 +1,12 @@
+package android.hardware.testvol@1.0;
+
+interface ITestvol {
+   /**
+    * Get volume button status
+    * This must be called whenever the android system enters.
+    */
+    @callflow(next={"*"})
+    @entry
+    @exit
+    read_stat() generates (int32_t ret);
+};

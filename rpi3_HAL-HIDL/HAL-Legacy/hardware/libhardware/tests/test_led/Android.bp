@@ -1,0 +1,15 @@
+cc_binary {
+    name: "test_hal",
+    srcs: ["test_hal.cpp"],
+
+    shared_libs: [
+        "liblog",
+        "libhardware",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+    ],
+}

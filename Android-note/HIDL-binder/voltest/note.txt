@@ -1,0 +1,44 @@
+ua file:
+sepolicy/hwservice_contexts
+sepolicy/hwservice.te
+sepolicy/attributes
+Them file
+sepolicy/hal_voltest.te
+
+sua file:
+device.mk
+PRODUCT_PACKAGES += vendor.hardware.voltest@1.0-service
+
+manifest.xml
+    <!-- Voltest HAL service -->
+    <hal format="hidl">
+        <name>vendor.hardware.voltest</name>
+        <transport>hwbinder</transport>
+        <version>1.0</version>
+        <interface>
+            <name>IVoltest</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+
+common/vendor_framework_compatibility_matrix.xml:
+    <!-- Voltest HAL Service -->
+    <hal format="hidl" optional="true">
+        <name>vendor.hardware.voltest</name>
+        <version>1.0</version>
+        <interface>
+            <name>IVoltest</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+
+add  in file sepolicy/file_contexts
+#For Voltest
+/(vendor|system/vendor)/bin/hw/vendor\.hardware\.voltest@1\.0-service      u:object_r:hal_voltest_default_exec:s0
+
+Generate java:
+hidl-gen -o ./tmp -Ljava -rvendor.hardware:vendor/<vendor name>/interfaces -randroid.hidl:system/libhidl/transport vendor.hardware.voltest@1.0
+
+add in file: device.mk to build classes.jar file
+PRODUCT_PACKAGES += vendor.hardware.voltest-V1.0-java
+

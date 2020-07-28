@@ -1,0 +1,13 @@
+cc_binary {
+    name: "test-led",
+
+    srcs: ["test.cpp"],
+
+    cflags: ["-Wall", "-Werror"],
+
+    shared_libs: [
+        "libcutils",
+        "libhardware",
+    ],
+}
+
