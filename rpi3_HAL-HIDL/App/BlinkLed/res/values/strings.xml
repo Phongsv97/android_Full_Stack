@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BlinkLed</string>
+    <string name="ledon">LedOn</string>
+    <string name="ledoff">LedOff</string>
+</resources>
