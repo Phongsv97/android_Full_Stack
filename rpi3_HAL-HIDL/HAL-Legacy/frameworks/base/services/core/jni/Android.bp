@@ -49,7 +49,7 @@ cc_library_static {
         "com_android_server_VibratorService.cpp",
         "com_android_server_PersistentDataBlockService.cpp",
         "com_android_server_GraphicsStatsService.cpp",
-	"com_android_server_VolbtnService.cpp",
+        "com_android_server_LedService.cpp",
         "onload.cpp",
     ],
 
@@ -131,7 +131,6 @@ cc_defaults {
         "android.hardware.vr@1.0",
         "android.frameworks.schedulerservice@1.0",
         "android.frameworks.sensorservice@1.0",
-        "vendor.<vendor_name>.hardware.box@1.0",
     ],
 
     static_libs: [

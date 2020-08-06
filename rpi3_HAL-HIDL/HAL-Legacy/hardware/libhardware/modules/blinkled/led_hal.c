@@ -81,7 +81,6 @@ static int get_status(const char *buff)
 {
 	int fd;
 	int ret;
-	char *buff = (const char *)calloc(10, sizeof(char));
 
 	fd = open(DEVICE_FILE, O_RDWR);
 	if(fd < 0) {

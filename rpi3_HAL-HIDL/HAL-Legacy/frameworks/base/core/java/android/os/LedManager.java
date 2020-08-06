@@ -18,16 +18,16 @@ public class LedManager
                 mLedService = service;
         }
 
-        public String get_status() {
-                try {
-					Log.i("PHONGLT", "LedManager get_status start--- !");
-					return mLedService.get_status();
-                } catch (RemoteException e) {
-					Log.e("PHONGLT", "LedManager get_status error--- !");
-					e.printStackTrace();
-					return -1;
-                }
-        }
+        // public String get_status() {
+        //         try {
+	// 				Log.i("PHONGLT", "LedManager get_status start--- !");
+	// 				return mLedService.get_status();
+        //         } catch (RemoteException e) {
+	// 				Log.e("PHONGLT", "LedManager get_status error--- !");
+	// 				e.printStackTrace();
+	// 				return -1;
+        //         }
+        // }
  
         public int config_led(String mString) {
                 try {

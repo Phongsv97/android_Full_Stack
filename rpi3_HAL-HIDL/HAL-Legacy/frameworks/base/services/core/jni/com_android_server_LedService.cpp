@@ -68,7 +68,7 @@ static void get_status_native(JNIEnv *env, jobject clazz, long  ptr, jbyteArray 
 
 static void config_native(JNIEnv *env, jobject clazz, long  ptr, jbyteArray buff)
 {
-	int err, size;
+	int err;
 	jbyte *byteArray;
 	struct led_device_t *device = (struct led_device_t *)ptr;
 
@@ -78,7 +78,7 @@ static void config_native(JNIEnv *env, jobject clazz, long  ptr, jbyteArray buff
 		return;
 	}
 
-	err = device->config_native((char *)byteArray);
+	err = device->config_led((char *)byteArray);
 	if (err != 0) {
 		ALOGE("PHONGLT %s, %d\n", __func__, __LINE__);
 		return;
@@ -95,7 +95,7 @@ static JNINativeMethod method_table[] = {
 	{ "config_native", "([J[B)V", (void *)config_native}, 
 };
 
-int register_android_server_VolbtnService(JNIEnv *env)
+int register_android_server_LedService(JNIEnv *env)
 {
 	return jniRegisterNativeMethods(env, "com/android/server/LedService",
 					method_table, NELEM(method_table));

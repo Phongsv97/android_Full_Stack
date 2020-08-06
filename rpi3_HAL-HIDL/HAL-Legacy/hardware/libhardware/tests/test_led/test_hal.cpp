@@ -15,6 +15,7 @@ int main()
 {
 	int err;
 	char *buff = (char *)calloc(7, sizeof(char));
+	char *led_off = (char *)"led_off";
 	struct led_module_t *module;
 	struct led_device_t *device = NULL;
 
@@ -33,8 +34,15 @@ int main()
 		printf("Faild : HAL get_status (%s)\n", strerror(-err));
 		return -1;
 	}
-
 	printf("PHONGLT status: %s\n", buff);
 
+	device->config_led(led_off);
+	err = device->get_status(buff);
+	if (err != 0) {
+		printf("Faild : HAL get_status (%s)\n", strerror(-err));
+		return -1;
+	}
+	printf("PHONGLT status: %s\n", buff);
+	
 	return 0;	
 }

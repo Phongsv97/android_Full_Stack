@@ -112,14 +112,14 @@ import android.os.IBatteryPropertiesRegistrar;
 import android.os.IBinder;
 import android.os.IDeviceIdleController;
 import android.os.IHardwarePropertiesManager;
+import android.os.ILedService;
 import android.os.IPowerManager;
-import android.os.IVolbtnService;
 import android.os.IRecoverySystem;
 import android.os.ISystemUpdateManager;
 import android.os.IUserManager;
 import android.os.IncidentManager;
+import android.os.LedManager;
 import android.os.PowerManager;
-import android.os.VolbtnManager;
 import android.os.RecoverySystem;
 import android.os.ServiceManager;
 import android.os.ServiceManager.ServiceNotFoundException;
@@ -282,6 +282,15 @@ final class SystemServiceRegistry {
                 return new ConnectivityManager(context, service);
             }});
 
+        registerService(Context.LED_SERVICE, LedManager.class,
+                new StaticApplicationContextServiceFetcher<LedManager>() {
+            @Override
+            public LedManager createService(Context context) throws ServiceNotFoundException {
+                IBinder b = ServiceManager.getServiceOrThrow(Context.LED_SERVICE);
+                ILedService service = ILedService.Stub.asInterface(b);
+                return new LedManager(context, service);
+            }});
+
         registerService(Context.IPSEC_SERVICE, IpSecManager.class,
                 new CachedServiceFetcher<IpSecManager>() {
             @Override
@@ -432,16 +441,6 @@ final class SystemServiceRegistry {
                 IPowerManager service = IPowerManager.Stub.asInterface(b);
                 return new PowerManager(ctx.getOuterContext(),
                         service, ctx.mMainThread.getHandler());
-            }});
-            
-        registerService(Context.VOLUME_DOWN_SERVICE, VolbtnManager.class,
-                new CachedServiceFetcher<VolbtnManager>() {
-            @Override
-            public VolbtnManager createService(ContextImpl ctx) throws ServiceNotFoundException {
-                IBinder b = ServiceManager.getServiceOrThrow(Context.VOLUME_DOWN_SERVICE);
-                IVolbtnService service = IVolbtnService.Stub.asInterface(b);
-                return new VolbtnManager(ctx.getOuterContext(),
-                        service);
             }});
 
         registerService(Context.RECOVERY_SERVICE, RecoverySystem.class,
@@ -1009,7 +1008,6 @@ final class SystemServiceRegistry {
                                         Context.DEVICE_IDLE_CONTROLLER));
                         return new DeviceIdleManager(ctx.getOuterContext(), service);
                     }});
-                    
     }
 
     /**

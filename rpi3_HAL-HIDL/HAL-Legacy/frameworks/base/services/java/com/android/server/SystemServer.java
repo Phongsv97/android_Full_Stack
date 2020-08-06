@@ -35,7 +35,6 @@ import android.os.Environment;
 import android.os.FactoryTest;
 import android.os.FileUtils;
 import android.os.IIncidentManager;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Parcel;
@@ -59,7 +58,6 @@ import com.android.internal.app.ColorDisplayController;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.notification.SystemNotificationChannels;
 import com.android.internal.os.BinderInternal;
-import com.android.internal.os.RegionalizationEnvironment;
 import com.android.internal.util.ConcurrentUtils;
 import com.android.internal.util.EmergencyAffordanceManager;
 import com.android.internal.widget.ILockSettings;
@@ -92,7 +90,6 @@ import com.android.server.net.watchlist.NetworkWatchlistService;
 import com.android.server.notification.NotificationManagerService;
 import com.android.server.oemlock.OemLockService;
 import com.android.server.om.OverlayManagerService;
-import com.android.server.os.RegionalizationService;
 import com.android.server.os.DeviceIdentifiersPolicyService;
 import com.android.server.os.SchedulingPolicyService;
 import com.android.server.pm.BackgroundDexOptService;
@@ -123,11 +120,9 @@ import com.android.server.usage.UsageStatsService;
 import com.android.server.vr.VrManagerService;
 import com.android.server.webkit.WebViewUpdateService;
 import com.android.server.wm.WindowManagerService;
+import com.android.server.LedService;
 
 import dalvik.system.VMRuntime;
-import dalvik.system.PathClassLoader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 
 import java.io.File;
 import java.io.IOException;
@@ -625,13 +620,6 @@ public final class SystemServer {
             mOnlyCore = true;
         }
 
-        // Start Carrier regionalization service
-        if (RegionalizationEnvironment.isSupported()) {
-            Slog.i(TAG, "Regionalization Service");
-            RegionalizationService regionalizationService = new RegionalizationService();
-            ServiceManager.addService("regionalization", regionalizationService);
-        }
-
         // Start the package manager.
         if (!mRuntimeRestart) {
             MetricsLogger.histogram(null, "boot_package_manager_init_start",
@@ -753,8 +741,6 @@ public final class SystemServer {
         ConsumerIrService consumerIr = null;
         MmsServiceBroker mmsService = null;
         HardwarePropertiesManagerService hardwarePropertiesService = null;
-        Object wigigP2pService = null;
-        Object wigigService = null;
 
         boolean disableSystemTextClassifier = SystemProperties.getBoolean(
                 "config.disable_systemtextclassifier", false);
@@ -764,7 +750,6 @@ public final class SystemServer {
         boolean enableLeftyService = SystemProperties.getBoolean("config.enable_lefty", false);
 
         boolean isEmulator = SystemProperties.get("ro.kernel.qemu").equals("1");
-        boolean enableWigig = SystemProperties.getBoolean("persist.vendor.wigig.enable", false);
 
         boolean isWatch = context.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_WATCH);
@@ -794,6 +779,15 @@ public final class SystemServer {
                     Slog.e(TAG, "Exception preloading default resources", ex);
                 }
             }, SECONDARY_ZYGOTE_PRELOAD);
+
+            traceBeginAndSlog("Start LedService by PHONGLT9");
+            try {
+                ServiceManager.addService(Context.LED_SERVICE,
+                    new LedService(context));
+            } catch (Throwable e) {
+                reportWtf("Starting LedService", e);
+            }
+            traceEnd();
 
             traceBeginAndSlog("StartKeyAttestationApplicationIdProviderService");
             ServiceManager.addService("sec_key_att_app_id_provider",
@@ -1175,33 +1169,6 @@ public final class SystemServer {
                 }
             }
 
-            if (enableWigig) {
-                try {
-                    Slog.i(TAG, "Wigig Service");
-                    String wigigClassPath =
-                        "/system/framework/wigig-service.jar" + ":" +
-                        "/system/framework/vendor.qti.hardware.wigig.supptunnel-V1.0-java.jar" + ":" +
-                        "/system/framework/vendor.qti.hardware.wigig.netperftuner-V1.0-java.jar";
-                    PathClassLoader wigigClassLoader =
-                            new PathClassLoader(wigigClassPath, getClass().getClassLoader());
-                    Class wigigP2pClass = wigigClassLoader.loadClass(
-                        "com.qualcomm.qti.server.wigig.p2p.WigigP2pServiceImpl");
-                    Constructor<Class> ctor = wigigP2pClass.getConstructor(Context.class);
-                    wigigP2pService = ctor.newInstance(context);
-                    Slog.i(TAG, "Successfully loaded WigigP2pServiceImpl class");
-                    ServiceManager.addService("wigigp2p", (IBinder) wigigP2pService);
-
-                    Class wigigClass = wigigClassLoader.loadClass(
-                        "com.qualcomm.qti.server.wigig.WigigService");
-                    ctor = wigigClass.getConstructor(Context.class);
-                    wigigService = ctor.newInstance(context);
-                    Slog.i(TAG, "Successfully loaded WigigService class");
-                    ServiceManager.addService("wigig", (IBinder) wigigService);
-                } catch (Throwable e) {
-                    reportWtf("starting WigigService", e);
-                }
-            }
-
             if (mPackageManager.hasSystemFeature(PackageManager.FEATURE_ETHERNET) ||
                 mPackageManager.hasSystemFeature(PackageManager.FEATURE_USB_HOST)) {
                 traceBeginAndSlog("StartEthernet");
@@ -1239,15 +1206,6 @@ public final class SystemServer {
                         new SystemUpdateManagerService(context));
             } catch (Throwable e) {
                 reportWtf("starting SystemUpdateManagerService", e);
-            }
-            traceEnd();
-			
-			traceBeginAndSlog("StartVolumeDownService");
-            try {
-                ServiceManager.addService(Context.VOLUME_DOWN_SERVICE,
-                        new VolbtnService(context));
-            } catch (Throwable e) {
-                reportWtf("starting VolbtnService", e);
             }
             traceEnd();
 
@@ -1706,27 +1664,7 @@ public final class SystemServer {
         mSystemServiceManager.startBootPhase(SystemService.PHASE_SYSTEM_SERVICES_READY);
         traceEnd();
 
-        // Wigig services are not registered as system services because of class loader
-        // limitations, send boot phase notification separately
-        if (enableWigig) {
-            try {
-                Slog.i(TAG, "calling onBootPhase for Wigig Services");
-                Class wigigP2pClass = wigigP2pService.getClass();
-                Method m = wigigP2pClass.getMethod("onBootPhase", int.class);
-                m.invoke(wigigP2pService, new Integer(
-                    SystemService.PHASE_SYSTEM_SERVICES_READY));
-
-                Class wigigClass = wigigService.getClass();
-                m = wigigClass.getMethod("onBootPhase", int.class);
-                m.invoke(wigigService, new Integer(
-                    SystemService.PHASE_SYSTEM_SERVICES_READY));
-            } catch (Throwable e) {
-                reportWtf("Wigig services ready", e);
-            }
-        }
-
         traceBeginAndSlog("MakeWindowManagerServiceReady");
-
         try {
             wm.systemReady();
         } catch (Throwable e) {

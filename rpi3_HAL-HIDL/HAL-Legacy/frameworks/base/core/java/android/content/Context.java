@@ -3262,10 +3262,12 @@ public abstract class Context {
      * you're running long tasks.
      */
     public static final String POWER_SERVICE = "power";
-	
-	
-	//Volume down service
-    public static final String VOLUME_DOWN_SERVICE = "volume_down";
+
+      /**
+     * Use with {@link #getSystemService(String)} to retrieve a
+     * {@link android.os.LedManager} for controlling LedService,
+     */
+    public static final String LED_SERVICE = "led_service";
 
     /**
      * Use with {@link #getSystemService(String)} to retrieve a

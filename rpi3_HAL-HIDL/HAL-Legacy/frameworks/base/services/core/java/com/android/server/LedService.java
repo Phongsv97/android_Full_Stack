@@ -44,25 +44,26 @@ public class LedService extends ILedService.Stub {
 		super.finalize();
 	}
 
-	public void config_led(String mString)
+	public int config_led(String mString)
 	{
 		byte[] byteArray = mString.getBytes();
 
-		Log.e(TAG, "config_led failed");
+		Log.i(TAG, "config_led");
+		config_native(mNativePointer, byteArray);
 
-		return config_native(mNativePointer, byteArray);
+		return 0;
 	}
 
-	public String get_status()
-	{
-		byte[] byteArray = new byte[6];
+	// public String get_status()
+	// {
+	// 	byte[] byteArray = new byte[6];
 
-		Log.e(TAG, "get_status failed");
+	// 	Log.e(TAG, "get_status failed");
 
-		get_status_native(mNativePointer, byteArray);
+	// 	get_status_native(mNativePointer, byteArray);
 		
-		return new String(byteArray);
-	}
+	// 	return new String(byteArray);
+	// }
 
 	private static native long init_native();
 	private static native void final_native(long ptr);

@@ -223,6 +223,7 @@ java_library {
         "core/java/android/os/IHardwarePropertiesManager.aidl",
         "core/java/android/os/IIncidentManager.aidl",
         "core/java/android/os/IIncidentReportStatusListener.aidl",
+        "core/java/android/os/ILedService.aidl",
         "core/java/android/os/IMaintenanceActivityListener.aidl",
         "core/java/android/os/IMessenger.aidl",
         "core/java/android/os/INetworkActivityListener.aidl",
@@ -231,7 +232,6 @@ java_library {
         "core/java/android/os/IProcessInfoService.aidl",
         "core/java/android/os/IProgressListener.aidl",
         "core/java/android/os/IPowerManager.aidl",
-		"core/java/android/os/IVolbtnService.aidl",
         "core/java/android/os/IRecoverySystem.aidl",
         "core/java/android/os/IRecoverySystemProgressListener.aidl",
         "core/java/android/os/IRemoteCallback.aidl",
@@ -382,7 +382,6 @@ java_library {
         "core/java/com/android/internal/policy/IShortcutService.aidl",
         "core/java/com/android/internal/os/IDropBoxManagerService.aidl",
         "core/java/com/android/internal/os/IParcelFileDescriptorFactory.aidl",
-        "core/java/com/android/internal/os/IRegionalizationService.aidl",
         "core/java/com/android/internal/os/IResultReceiver.aidl",
         "core/java/com/android/internal/os/IShellCallback.aidl",
         "core/java/com/android/internal/statusbar/IStatusBar.aidl",
@@ -586,8 +585,6 @@ java_library {
         "packages/services/Proxy/com/android/net/IProxyPortListener.aidl",
         "core/java/android/service/quicksettings/IQSService.aidl",
         "core/java/android/service/quicksettings/IQSTileService.aidl",
-        "telephony/java/com/android/internal/telephony/ISmsSecurityService.aidl",
-        "telephony/java/com/android/internal/telephony/ISmsSecurityAgent.aidl",
 
         ":libupdate_engine_aidl",
 
@@ -683,7 +680,6 @@ java_library {
         "android.hardware.wifi-V1.0-java-constants",
         "android.hardware.radio-V1.0-java",
         "android.hardware.usb.gadget-V1.0-java",
-        "vendor.<vendor_name>.hardware.box-V1.0-java",        
     ],
 
     // Loaded with System.loadLibrary by android.view.textclassifier
