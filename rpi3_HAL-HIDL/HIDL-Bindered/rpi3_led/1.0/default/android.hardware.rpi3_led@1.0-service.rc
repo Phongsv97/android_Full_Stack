@@ -1,0 +1,5 @@
+service blinkled /vendor/bin/hw/android.hardware.rpi3_led@1.0-service
+    class hal
+    user root
+    group root
+    seclabel u:r:mService:s0

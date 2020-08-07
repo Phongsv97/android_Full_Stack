@@ -1,0 +1,5 @@
+package android.hardware.rpi3_led@1.0;
+ 
+interface IBlinkLed {
+    simpfn(int32_t valueIn) generates (int32_t valueRet);
+};
